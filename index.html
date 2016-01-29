@@ -9,14 +9,16 @@
 </head>
 <body>
   <div class="header">
-    <h1 class="text-center">pizza mapper</h1>
+    <h1 class="text-center">PizzaMapper</h1>
   </div>
   <div class="sidebar">
     <form id="search-form">
-      <label>Enter location or postal code</label>
-      <input type="text" name="location"/>
-      <input type="submit" class="btn btn-danger" value="FIND PIZZA"/>
+      <input type="text" id="autocomplete" name="location" class="search-text"/>
+      <input type="submit" class="btn btn-danger go-btn" value="GO"/>
     </form>
+    <div class="results">
+      <ul id="sidebar-list"></ul>
+    </div>
   </div>
   <div id="map"></div>
   <script src="https://code.jquery.com/jquery-1.12.0.min.js"></script>
