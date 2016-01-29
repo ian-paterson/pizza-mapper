@@ -1,0 +1,68 @@
+html, body {
+  height: 100%;
+  margin: 0;
+  padding: 0;
+}
+
+.header {
+  height: 15%;
+  min-height: 100px;
+  background: no-repeat center url("../img/pizza-bg.jpg")
+}
+
+.header h1 {
+  margin: 0;
+  padding-top: 25px;
+  color: white;
+  text-shadow: -2px 0 black, 0 2px black, 2px 0 black, 0 -2px black;
+}
+
+.sidebar {
+  height: 85%;
+  float: left;
+  padding: 20px;
+}
+
+label {
+  display: block;
+}
+
+input {
+  display: inline-block;
+}
+
+#map {
+  height: 85%;
+}
+
+.high-rtg {
+  font-weight: bold;
+  color: #5cb85c;
+}
+
+.med-rtg {
+  font-weight: bold;
+  color: #f0ad4e;
+}
+
+.low-rtg {
+  font-weight: bold;
+  color: #d9534f;
+}
+
+.open-msg {
+  background-color: #5cb85c;
+  color: #fff;
+}
+
+.closed-msg {
+  background-color: #d9534f;
+  color: #fff;
+}
+
+.open-closed {
+  display: inline-block;
+  border-radius: 5px;
+  padding: 2px 5px 1px 5px;
+  margin-top: 5px;
+}
