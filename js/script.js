@@ -2,6 +2,7 @@ var geocoder;
 var map;
 var infowindow;
 var details;
+var autocomplete;
 
 $(function() {
   $('#search-form').on('submit', function(e) {
@@ -20,15 +21,20 @@ function initMap(mapCenter) {
 
   infowindow = new google.maps.InfoWindow();
 
-  details = new google.maps.places.PlacesService(map);
+	autocomplete = new google.maps.places.Autocomplete(
+    (document.getElementById('autocomplete')),
+    {types: ['geocode']}); 
 
   map = new google.maps.Map(document.getElementById('map'), {
       center: mapCenter,
       zoom: 15 
     });
+
+  details = new google.maps.places.PlacesService(map);
 }
 
 function codeAddress(address) {
+  $('#sidebar-list').empty();
 	geocoder.geocode({'address': address}, function(results, status) {
 		if (status == google.maps.GeocoderStatus.OK) {
       var inputLocation = results[0].geometry.location;
@@ -62,18 +68,17 @@ function mapCallback(results, status) {
 
 
 function createMarker(placeId) {
-  var place = details.getDetails({'placeId': placeId}, detailsCallback);
+  details.getDetails({'placeId': placeId}, detailsCallback);
 }
 
 function detailsCallback(place, status) {
-  console.log(place);
-  var placeLoc = place.geometry.location;
-  var marker = new google.maps.Marker({
-    map: map,
-    position: place.geometry.location
-  });
+  if (place !== null) {
+    var placeLoc = place.geometry.location;
+    var marker = new google.maps.Marker({
+      map: map,
+      position: place.geometry.location
+    });
 
-  google.maps.event.addListener(marker, 'click', function() {
     var ratingClass;
     var ratingMsg;
     if (place.rating === undefined) {
@@ -102,17 +107,39 @@ function detailsCallback(place, status) {
     var linkTag = (place.website !== undefined) ? '<a href="' + place.website + '">' : '';
     var linkTagEnd = place.website !== undefined ? '</a>' : '';
 
+    var phoneNum = place.international_phone_number !== undefined ? 
+      place.international_phone_number : 'No Phone Number';
+
     var content = '<div><strong>' + linkTag + place.name + linkTagEnd + '</strong></div>' +
-                  '<div>' + ''+ '</div>' +
+                  '<div>' + phoneNum + '</div>' +
                   '<div>' + place.formatted_address + '</div>' +
-                  '<div clas="' + ratingClass + '">' + ratingMsg  + '</span></div>' +
+                  '<div class="' + ratingClass + '">' + ratingMsg  + '</span></div>' +
                   '<div class="' + openClass + '">' + openMessage + '</div>';
 
-    infowindow.setContent(content);
-    infowindow.open(map, this);
-  });
+    google.maps.event.addListener(marker, 'click', function() {
+      infowindow.setContent(content);
+      infowindow.open(map, this);
+    });
+
+    var info = {
+      marker: marker,
+      content: content
+    };
+
+    createSidebarMarker(info);
+  }
 }
 
+function createSidebarMarker(info) {
+  var ul = document.getElementById("sidebar-list");
+  var li = document.createElement("li");
+  li.innerHTML = info.content;
+  ul.appendChild(li);
+  
+  google.maps.event.addDomListener(li, "click", function(){
+    google.maps.event.trigger(info.marker, "click");
+  });
+}
 
 function convertDecimalToStarString(rating, colorClass) {
   var str = '';
